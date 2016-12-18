@@ -1,3 +1,15 @@
+// A Metropolis Monte Carlo program for silica nanoparticles.
+// The program uses free boundary conditions and BKS interatomic
+// potential(proposed by Beest, Kramer and Van Saten).The methodology
+// used in this algorithm and detailed explaination of the model is 
+// explained in the thesis work: https://www.researchgate.net/publication/311138439_A_study_on_the_structure_and_properties_of_silica_glass_and_silica_nanoparticles_via_Monte_Carlo_simulations
+
+// The algorithm provides the structural information for given particle size (angstrom) and
+// temperature (in Kelvin)
+
+// author: Naveen Kumar Kaliannan
+
+
 #include<iostream>
 #include <iomanip>  
 #include<fstream>
@@ -19,7 +31,7 @@ const unsigned int dim = 3;
 const double Unit_LJ = 96.49930; //(eV to KJ per mol unit conversion)
 const double Unit_C = 1389.552281;
 const double R = 0.0083144; 
-const double Temp     = 300;
+const double Temp     = 300;//300 Kelvin
 const unsigned int iter = 5000000;
 const double q1 = +2.4;
 const double q2 = -1.2;
