@@ -1,0 +1,131 @@
+#include "Averages.h"
+#include "Configuration.h"
+#include<vector>
+#include<fstream>
+#include<iostream>
+
+
+void Averages::store_AveragesCalculation(const Configuration& config)
+{
+  const double Pi = 3.1415926536;
+  double V = (4/3)*Pi*pow(diameter*0.5,3);
+
+  // center position (x,y,z) of the particle
+  double x_ = 0,y_ = 0,z_ = 0;
+  for(unsigned int i = 0;i < config.N * 4;i = i + 4)
+    {
+      x_ += config.r[0+i]/config.N;
+      y_ += config.r[1+i]/config.N;
+      z_ += config.r[2+i]/config.N;          
+    }
+
+  // 1. Density profile
+  for(unsigned int i = 1;i < RDP_size;i++)
+    {
+      unsigned int N_All = 0,N_Si = 0,N_O = 0;
+      double rij = 0;
+      for(unsigned int j = 0;j < config.N * 4;j = j + 4)
+        {
+          rij = norm(config.r[0+j] - x_, config.r[1+j] - y_, config.r[2+j] - z_);
+
+          if(rij <= x[i] + (RDP_h/2) && rij > x[i] - (RDP_h/2)) //Total
+            {
+              N_All = N_All + 1;
+            }
+          if(rij <= x[i] + (RDP_h/2) && rij > x[i] - (RDP_h/2) && config.r[3+j] == +2.4000 ) //Silicon
+            {
+              N_Si = N_Si + 1;
+            }
+          if(rij <= x[i] + (RDP_h/2) && rij > x[i] - (RDP_h/2) && config.r[3+j] == -1.200 )//Oxygen
+            {
+              N_O = N_O + 1;
+            }
+        }
+
+      Density_all[i] += N_All / (4 * Pi * x[i] * x[i] * RDP_h);
+      Density_O[i]   += N_O  / (4 * Pi * x[i] * x[i] * RDP_h);
+      Density_Si[i]  += N_Si  / (4 * Pi * x[i] * x[i] * RDP_h);
+    }
+
+  // 2. Radial Distribution Function
+  for(unsigned int i = 1;i < RDF_size;i++)
+    {
+      unsigned int N_All = 0,N_Si = 0,N_O = 0,N_SiO = 0;
+      double rij = 0;
+      for(unsigned int j = 0;j < (config.N * 4) - 4 ;j = j + 4)
+        {
+          for(unsigned int k = j + 4;k < (config.N * 4) ;k = k + 4)
+            {
+              rij = norm(config.r[0+j]-config.r[0+k], config.r[1+j]-config.r[1+k], config.r[2+j]-config.r[2+k]);
+              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) )
+              {
+                N_All += 1;
+              }
+              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) && config.r[k+3] == config.r[j+3] && config.r[k+3] == -1.2 )
+              {
+                N_O += 1;
+              }
+              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) && config.r[k+3] == config.r[j+3] && config.r[k+3] == 2.4  )
+              {
+                N_Si += 1;
+              }
+              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) && config.r[k+3] != config.r[j+3] && config.r[k+3] != -1.2  )
+              {
+                N_SiO += 1;
+              }
+            }
+        }
+
+      RDF_all[i] += 2 * N_All  / ( (config.N/V) * 4 * Pi * r[i] * r[i] *  RDF_h);
+      RDF_Si[i]  += 2 * N_Si  / ( (config.N_si/V) * 4 * Pi * r[i] * r[i] *  RDF_h);
+      RDF_O [i]  += 2 * N_O   / ( (config.N_o/V) * 4 * Pi * r[i] * r[i] *  RDF_h);
+      RDF_SiO[i] += 2 * N_SiO / ( (config.N_o/V) * 4 * Pi * r[i] * r[i] *  RDF_h);
+    }
+     
+}
+
+
+void Averages::EnergyDataWriter()
+{
+  ofstream outfile("output/data/Energy.dat");
+  if(!outfile.is_open())
+    {
+      cout << "Error Opening file - Cannot open file!" << endl;
+    }
+  for(unsigned int i = 0; i < steps.size(); ++i)
+    { 
+      outfile << steps[i] <<"  "<< Energy[i]<< endl;
+    }
+  outfile.close();
+  outfile.clear(); 
+}
+
+void Averages::DensityDataWriter(unsigned int mean)
+{
+  ofstream outfile("output/data/RadialDensity.dat");
+  if(!outfile.is_open())
+    {
+      cout << "Error Opening file - Cannot open file!" << endl;
+    }
+  for(unsigned int i = 0; i < RDP_size; ++i)
+    { 
+      outfile << x[i] <<" \t "<< Density_all[i]/mean <<" \t "<< Density_O[i]/mean <<" \t "<< Density_Si[i]/mean << endl;
+    }
+  outfile.close();
+  outfile.clear(); 
+}
+
+void Averages::RDFWriter(unsigned int mean,unsigned int N,unsigned N_si,unsigned N_o)
+{
+  ofstream outfile("output/data/RDF.dat");
+  if(!outfile.is_open())
+    {
+      cout << "Error Opening file - Cannot open file!" << endl;
+    }
+  for(unsigned int i = 0; i < RDF_size; ++i)
+    { 
+      outfile << r[i] <<" \t "<< RDF_all[i]/(mean*N) <<" \t "<< RDF_Si[i]/(mean*N_si) <<" \t "<< RDF_O[i]/(mean*N_o) <<" \t "<< RDF_SiO[i]/(mean*N_o) << endl;
+    }
+  outfile.close();
+  outfile.clear(); 
+}

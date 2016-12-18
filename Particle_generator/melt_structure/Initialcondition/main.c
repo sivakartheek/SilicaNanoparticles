@@ -1,0 +1,45 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+int N = 192;
+int ds = 10;
+
+int main()
+{
+  double l = 0;
+  FILE *fl = fopen("length.txt","r+");
+  fscanf(fl,"%lf",&l);
+  fclose(fl);
+
+  FILE *fp = fopen("position.txt","r+");
+  double r[4][N];
+  for(int i = 0 ;i < N;i++)
+  {
+    fscanf(fp,"%lf %lf %lf %lf",&r[0][i],&r[1][i],&r[2][i],&r[3][i]);
+    //printf("%lf %lf %lf %lf \n",r[0][i],r[1][i],r[2][i],r[3][i]);
+  }
+  fclose(fp);
+
+  int in = 0;
+  for(int i = 0;i < N;i++)
+  {
+    for(int x = 0;x < ds;x++)
+    {
+      for(int y = 0;y < ds;y++)
+      {
+        for(int z = 0;z < ds;z++)
+        {
+          in += 1;
+          printf("%lf %lf %lf %lf \n",x * l + r[0][i],y * l + r[1][i],z * l + r[2][i],r[3][i]);   
+        }
+      }
+    }
+
+  } 
+
+  printf("\n \n \t Total Number of Particles = %i (Silicon %i + oxygen %i) \n \t \n",in,in/3,in*2/3);
+  printf("\n \t Length of the box = %lf \n",ds*l);
+  printf("\n \n \t type './test |tee ../position.txt' \n \n");
+
+  return 0;
+}

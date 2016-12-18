@@ -1,0 +1,434 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<time.h>
+
+#include "../Model/Numerical/numerics.h"
+
+int N = 192000 ;//65856;//1536;//192//5184;
+int dim = 3;
+double q1 =  2.4;
+double q2 = -1.2; 
+double q2_= -0.856;
+double q3 =  0.256;
+
+double dist(double **r,int i,int j)
+{
+  return norm(r[0][i]-r[0][j],r[1][i]-r[1][j],r[2][i]-r[2][j]);
+}
+
+void SiO(double **r,int i,int j1,int j2,int j3,int j4,int n,int nn)
+{
+  srand(time(NULL));
+  //one hydroxyl group
+  if(n == 1)
+  {
+    j4 = nn - 1;
+    int in = 1;
+    r[3][j4] = q2;
+    while(in)
+    {
+     r[0][j4] = r[0][i] +  2.1 * (2*Rand_DOUBLE()-1);
+     r[1][j4] = r[1][i] +  2.1 * (2*Rand_DOUBLE()-1);
+     r[2][j4] = r[2][i] +  2.1 * (2*Rand_DOUBLE()-1);
+    
+    double a,b,c,d;
+    a = dist(r,i,j4);
+    b = dist(r,j1,j4);
+    c = dist(r,j2,j4);
+    d = dist(r,j3,j4);
+
+
+      if( a > 1.40 && a < 1.83 &&
+  	 b > 2.35 && b  < 2.68 &&
+	 c > 2.35 && c < 2.68 &&
+	 d > 2.35 && d < 2.68  )
+      {
+        in  = 0;
+        //printf("con %lf %lf %lf %lf \n",r[0][j4],r[1][j4],r[2][j4],q2);
+      }
+ 
+    }
+  }
+  //ends one hydroxyl group
+
+  //two hydroxyl group
+  if(n == 2)
+  {
+    j4 = nn - 1;
+    j3 = nn - 2;
+    r[3][j4] = q2;
+    r[3][j3] = q2;
+    int in = 1;
+    while(in)
+    {
+     r[0][j4] =  r[0][i] +  2.1 * (2*Rand_DOUBLE()-1);
+     r[1][j4] =  r[1][i] +  2.1 * (2*Rand_DOUBLE()-1);
+     r[2][j4] =  r[2][i] +  2.1 * (2*Rand_DOUBLE()-1);
+
+    double a,b,c;
+    a = dist(r,i,j4);
+    b = dist(r,j1,j4);
+    c = dist(r,j2,j4);
+
+    if( a > 1.39 && a < 1.9 &&
+  	 b > 2.35 && b  < 2.75 &&
+	 c > 2.35 && c < 2.75  )
+      {
+        in  = 0;
+        //printf("con 21  %lf %lf %lf %lf \n",r[0][j4],r[1][j4],r[2][j4],q2);
+      }
+    }
+
+    in = 1;
+    while(in)
+    {
+     r[0][j3] =  r[0][i] +  2.1 * (2*Rand_DOUBLE()-1);
+     r[1][j3] =  r[1][i] +  2.1 * (2*Rand_DOUBLE()-1);
+     r[2][j3] =  r[2][i] +  2.1 * (2*Rand_DOUBLE()-1);
+
+    double a,b,c,d;
+    a = dist(r,i,j3);
+    b = dist(r,j1,j3);
+    c = dist(r,j2,j3);
+    d = dist(r,j4,j3);
+   
+    if( a > 1.39 && a < 1.88 &&
+  	 b > 2.35 && b  < 2.78 &&
+	 c > 2.35 && c < 2.78 &&
+	 d > 2.35 && d < 2.78  )
+      {
+        in  = 0;
+        //printf("con 22 %lf %lf %lf %lf \n",r[0][j3],r[1][j3],r[2][j3],q2);
+      }
+    } 
+  }
+  //ends two hydroxyl group
+
+
+
+}
+
+
+double angle_btwn_3points(double **r,int i,int j1,int j2)
+{
+  double x1,x2;
+  double y1,y2;
+  double z1,z2;
+
+  x1 = r[0][j1] - r[0][i];
+  x2 = r[0][i] - r[0][j2];
+  y1 = r[1][j1] - r[1][i];
+  y2 = r[1][i] - r[1][j2];
+  z1 = r[2][j1] - r[2][i];
+  z2 = r[2][i] - r[2][j2];
+
+  double top =  (x1*x2+y1*y2+z1*z2) - 0.0001 ;
+  double bot =  norm(x1,y1,z1) * norm(x2,y2,z2);
+  if( top == bot )
+  {
+    return 180; 
+  }
+  else
+  {
+    return  180 - (acos(top/bot) * 57.296);
+  }
+}
+
+
+void OH(double **r,int i,int j1,int j2,int n,int nn)
+{
+  srand(time(NULL));
+  //one hydroxyl group
+  if(n == 1 && j1 != -1)
+  {
+    j2 = nn - 1;
+    int in = 1;
+    r[3][j2] = q3;
+    while(in)
+    {
+     r[0][j2] =  r[0][i] +  5 * (2*Rand_DOUBLE()-1);
+     r[1][j2] =  r[1][i] +  5 * (2*Rand_DOUBLE()-1);
+     r[2][j2] =  r[2][i] +  5 * (2*Rand_DOUBLE()-1);
+    
+    double a,b,c;
+    a = dist(r,i,j2);
+    b = dist(r,j1,j2);
+    c = angle_btwn_3points(r,i,j1,j2);
+
+
+      if( a > 0.85 && a < 0.91  &&
+  	 b > 1.8 && b  < 2.5 &&
+	 c > 115 && c < 120 )
+      {
+        in  = 0;
+        //printf("con %lf %lf %lf %lf \n",r[0][j2],r[1][j2],r[2][j2],q3);
+      }
+ 
+    }
+  }
+  //ends one hydroxyl group
+}
+
+/// ---------------------------main implementation--------------------------.///
+int main()
+{
+  // Particle Diameter 'c' in angstrom
+  double c = 0;FILE *fp = fopen("melt_structure/Particle_Diameter_in_angstrom.txt","r+");fscanf(fp,"%lf",&c);fclose(fp);
+
+  double l;fp = fopen("melt_structure/length.txt","r+");fscanf(fp,"%lf",&l);fclose(fp);
+
+  double** r = (double **)malloc((dim+1)*sizeof(double));
+  double** p = (double **)malloc((dim+1)*sizeof(double));
+  for(int i = 0;i < (dim+1); i++)
+  {
+    r[i] = (double *)malloc(N*sizeof(double));    
+    p[i] = (double *)malloc(N*sizeof(double));
+  }
+ 
+  fp = fopen("melt_structure/position.txt","r+");
+  for(int i = 0;i < N;i++)
+  {
+    fscanf(fp,"%lf %lf %lf %lf",&p[0][i],&p[1][i],&p[2][i],&p[3][i]);
+  }
+
+
+  printf("\n");
+  printf("Length of the Bulk silica = %lf angstrom \n",l);
+  printf("Diameter of the particle = %lf angstrom \n",c);
+  printf("Center position of the particle = %lf %lf %lf \n",l/2,l/2,l/2);
+
+  int nn = 0;
+  for(int i = 0; i < N;i++)
+  {
+    if( norm(p[0][i]-(l/2),p[1][i]-(l/2),p[2][i]-(l/2)) < c * 0.5 )
+    {
+      r[0][nn] = p[0][i];
+      r[1][nn] = p[1][i];
+      r[2][nn] = p[2][i];
+      r[3][nn] = p[3][i];
+      nn += 1;
+    }
+  }
+  N = nn;int n_ = 0;
+
+  for(int i = 0 ;i < nn;i++)
+  {
+    for(int j = 0;j < nn;j++)
+    {
+      if(dist(r,i,j) < 2.0 && r[3][i] == q2 && r[3][j] == q2 && i != j )
+      {
+        r[3][i] = 0.0; printf("heello \n");
+      }
+    }
+  }
+
+  
+  //including oxygen group on silica
+  for(int i = 0;i < N;i++)
+  {
+    if(r[3][i] == q1)
+    {
+      int j1 = -1,j2 = -1,j3 = -1,j4 = -1;
+      double min = 1000;
+      //first oxygen
+      for(int j = 0;j < N;j++)
+      {
+        if(i == j){}
+        else if(r[3][j] == q2)
+        {
+          double rij = norm(r[0][i]-r[0][j],r[1][i]-r[1][j],r[2][i]-r[2][j]);
+          if(rij < min && rij < 2.5)
+          {
+            min = rij;
+            j1 = j;
+          }
+        }
+      }
+
+      //second oxygen
+      min = 1000;
+      for(int j = 0;j < N;j++)
+      {
+        if(i == j || j == j1){}
+        else if(r[3][j] == q2)
+        {
+          double rij = norm(r[0][i]-r[0][j],r[1][i]-r[1][j],r[2][i]-r[2][j]);
+          if(rij < min && rij < 2.5)
+          {
+            min = rij;
+            j2 = j;
+          }
+        }
+      }
+
+      //third oxygen
+      min = 1000;
+      for(int j = 0;j < N;j++)
+      {
+        if(i == j || j == j1 || j == j2){}
+        else if(r[3][j] == q2)
+        {
+          double rij = norm(r[0][i]-r[0][j],r[1][i]-r[1][j],r[2][i]-r[2][j]);
+          if(rij < min && rij < 2.5 )
+          {
+            min = rij;
+            j3 = j;
+          }
+        }
+      }
+      
+      //fourth oxygen
+      min = 1000;
+      for(int j = 0;j < N;j++)
+      {
+        if(i == j || j == j1 || j == j2 || j == j3){}
+        else if(r[3][j] == q2)
+        {
+          double rij = norm(r[0][i]-r[0][j],r[1][i]-r[1][j],r[2][i]-r[2][j]);
+          if(rij < min && rij < 2.5 )
+          {
+            min = rij;
+            j4 = j;
+          }
+        }
+      }
+
+      int n = 0;
+      if(j4 == -1){ n = 1;}
+      if(j3 == -1){ n = 2;}
+      if(j2 == -1){ n = 0; r[3][i] = 0.0;}// printf("silicon atom %i has trisilanol groups \n",i)
+      nn += n;n_ += n;
+      SiO(r,i,j1,j2,j3,j4,n,nn); 
+    }
+  }
+  N = nn;
+
+
+  for(int i = 0 ;i < nn;i++)
+  {
+    for(int j = 0;j < nn;j++)
+    {
+      if(dist(r,i,j) < 2.0 && r[3][i] == q2 && r[3][j] == q2 && i != j )
+      {
+         r[3][i] = 0;//printf("common zero = %lf \n",dist(r,i,j));
+      }
+    }
+  }
+
+
+  n_ = 0;
+  //including hydro-oxyl group
+  for(int i = 0;i < N;i++)
+  {
+    if(r[3][i] == q2)
+    {
+      int j1 = -1,j2 = -1;
+      double min = 1000;
+      //first oxygen
+      for(int j = 0;j < N;j++)
+      {
+        if(i == j){}
+        else if(r[3][j] == q1)
+        {
+          double rij = norm(r[0][i]-r[0][j],r[1][i]-r[1][j],r[2][i]-r[2][j]);
+          if(rij < min && rij < 2.3)
+          {
+            min = rij;
+            j1 = j;
+          }
+        }
+      }
+
+      //second oxygen
+      min = 1000;
+      for(int j = 0;j < N;j++)
+      {
+        if(i == j || j == j1){}
+        else if(r[3][j] == q1)
+        {
+          double rij = norm(r[0][i]-r[0][j],r[1][i]-r[1][j],r[2][i]-r[2][j]);
+          if(rij < min && rij < 2.3 )
+          {
+            min = rij;
+            j2 = j;
+          }
+        }
+      }
+
+      int n = 0;
+      if(j2 == -1){ n = 1; r[3][i] = q2_;}
+      if(j1 == -1){ n = 0; r[3][i] = 0.00;}// printf("Isolated oxygen = %i \n",i);}
+      n_ += n;
+      nn += n; 
+      OH(r,i,j1,j2,n,nn); 
+    }
+  }
+  N = nn;
+
+
+  FILE *fpp = fopen("generated_particles/position.txt","w+");
+  int count = 0;
+  for(int i = 0;i < nn;i++)
+  {
+    if(r[3][i] == 0.0000){}
+    else{
+    count += 1;
+    fprintf(fpp,"%lf %lf %lf %lf \n",r[0][i],r[1][i],r[2][i],r[3][i]);
+    }
+  }
+  
+  int oh = 0;
+  for(int i = 0;i < nn;i++)
+  {
+    if(r[3][i] == q3)
+    {
+      oh +=1;
+    }
+  }
+
+  int si = 0;
+  for(int i = 0;i < nn;i++)
+  {
+    if(r[3][i] == q1)
+    {
+      si +=1;
+    }
+  }
+
+  int o = 0;
+  for(int i = 0;i < nn;i++)
+  {
+    if(r[3][i] == q2)
+    {
+      o += 1;
+    }
+  }
+
+  int o_ = 0;
+  for(int i = 0;i < nn;i++)
+  {
+    if(r[3][i] == q2_)
+    {
+      o_ += 1;
+    }
+  }
+
+  FILE *atoms = fopen("generated_particles/atoms_count.txt","w+");
+  fprintf(atoms,"Count = %i \n silicon %i \n oxygen(bulk) %i \n hydrogen %i \n oxygen (silanol) %i \n sum of all atoms =  %i \n OH group concentration per nm square = %lf",count,si,o,oh,o_,si+o+oh+o_, oh*100/(4*3.14*pow((c*0.5),2)));
+ 
+  FILE *atom = fopen("generated_particles/Number.txt","w+");
+  fprintf(atom,"%i %i %i %i %i ",count,si,o,oh,o_);
+
+  printf("\n SiO2 spherical nanoparticles are generated \n \n ");
+
+  return 0;
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,3 @@
+
+exe:main.c ../../Numerical/numerics.c
+	gcc -std=c99 main.c ../../Numerical/numerics.c -o main -lm 
