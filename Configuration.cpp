@@ -4,11 +4,13 @@
 
 using namespace std;
 
-Configuration::Configuration(unsigned int N_, unsigned int N_si_, unsigned int N_o_, double* r_)
+Configuration::Configuration(unsigned int N_, unsigned int N_si_, unsigned int N_o_, double* r_, double q1_, double q2_)
 {
   N = N_;
   N_si = N_si_;
   N_o = N_o_;
+  q1 = q1_;
+  q2 = q2_;
   r = new double[N*4];    
   for(unsigned int i = 0;i < N * 4;i = i + 4)
     {
@@ -24,6 +26,8 @@ Configuration::Configuration(const Configuration& config)
   N = config.N;
   N_si = config.N_si;
   N_o = config.N_o;
+  q1 = config.q1;
+  q2 = config.q2;
   r = new double[N*4];  
   for(unsigned int i = 0;i < N * 4;i = i + 4)
     {

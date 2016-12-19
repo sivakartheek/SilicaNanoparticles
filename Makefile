@@ -18,5 +18,8 @@ Averages.o:Averages.cpp
 
 clean:
 	rm -f $(CEXE) $(COBJ) 
+	rm -f inputs/*
+	rm -f output/data/*
+	rm -f output/graph/*
 
 

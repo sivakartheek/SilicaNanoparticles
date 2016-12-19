@@ -94,6 +94,7 @@ class Averages
     void EnergyDataWriter();
     void DensityDataWriter(unsigned int mean); 
     void RDFWriter(unsigned int mean,unsigned int N,unsigned N_si,unsigned N_o);   
+    void PositionWriter(const Configuration & config);
     inline double norm(double x,double y,double z)
     {
       return sqrt(x*x+y*y+z*z);

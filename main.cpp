@@ -33,8 +33,8 @@ const double Unit_C = 1389.552281;
 const double R = 0.0083144; 
 const double Temp     = 300;//300 Kelvin
 const unsigned int iter = 5000000;
-const double q1 = +2.4;
-const double q2 = -1.2;
+const double q1 = +2.4; //Silicon charge
+const double q2 = -1.2; //Oxyegn charge
 
 //Buckingham + Coloumb potentials (Total system)
 double BKS_total(const Configuration& config)
@@ -49,11 +49,11 @@ double BKS_total(const Configuration& config)
           rij = norm(config.r[0+i]-config.r[0+j],config.r[1+i]-config.r[1+j],config.r[2+i]-config.r[2+j]);
           if(rij < 60 && i !=  j)//Potential truncation
             {
-              if(config.r[i+3] == config.r[j+3] && config.r[i+3] == q1 )//Silicon - Silicon
+              if(config.r[i+3] == config.r[j+3] && config.r[i+3] == config.q1 )//Silicon - Silicon
                 {
                   u_BKS += (1389.552 * (config.r[3+i] * config.r[3+j] / rij));
                 }
-              else if(config.r[i+3] == config.r[j+3] && config.r[i+3] == q2 )//Oxygen - Oxygen
+              else if(config.r[i+3] == config.r[j+3] && config.r[i+3] == config.q2 )//Oxygen - Oxygen
                 {
                   u_BKS += ((134015.6224*exp(-rij*2.7600)) - (16887.3775/pow(rij,6.0))) +   (1389.552 * config.r[3+i] * config.r[3+j] / rij);
                 }
@@ -80,11 +80,11 @@ double BKS(const Configuration& config,unsigned int i)
       rij = norm(config.r[0+i]-config.r[0+j],config.r[1+i]-config.r[1+j],config.r[2+i]-config.r[2+j]);
       if(rij < 60 && i !=  j)//Potential truncation
         {
-          if(config.r[i+3] == config.r[j+3] && config.r[i+3] == q1 )//Silicon - Silicon
+          if(config.r[i+3] == config.r[j+3] && config.r[i+3] == config.q1 )//Silicon - Silicon
             {
               u_BKS += (1389.552 * config.r[3+i] * config.r[3+j] / rij);
             }
-          else if(config.r[i+3] == config.r[j+3] && config.r[i+3] == q2 )//Oxygen - Oxygen
+          else if(config.r[i+3] == config.r[j+3] && config.r[i+3] == config.q2 )//Oxygen - Oxygen
             {
               u_BKS += ((134015.6224*exp(-rij*2.7600)) - (16887.3775/pow(rij,6))) + (1389.552 * config.r[3+i] * config.r[3+j] / rij);
             }
@@ -135,17 +135,16 @@ int main()
   infile.clear();
 
 
-  Configuration config_old (N, N_si, N_o, r);  delete[] r;  
+  Configuration config_old (N, N_si, N_o, r, q1, q2);  delete[] r;  
   Configuration config_new (config_old);
   Averages average(600,diameter*8,diameter);
-  
 
   srand (time(NULL));
   unsigned int P, Mean;
-  double delta_U  = 0, weight = 0,temp;
-  cout<<"No. of Iter."<<"\t Total P.E of the system (in eV)"<<"\t Potential energy change (in eV)"<<endl;
+  double delta_U  = 0, weight = 0,temp  = 0, temp1 = 0;
+  cout<<"No. of Iter."<<"\t Total P.E of the system (in eV)"<<"\t Potential energy change (in %)"<<endl;
 
-  for(unsigned int i = 0;i < iter;++i)
+  for(unsigned int i = 0;i <= (iter);++i)
     {
       //1. Select a new atom in the configuration
       P =  Rand_INT(0,N) * 4;
@@ -168,23 +167,25 @@ int main()
         }  
 
       //The total potential energy of the system (in eV) is printed for every 100000 steps to observe the convergence.
-      if(i%1000000 == 1) 
+      if(i%100000 == 0) 
         {
-          cout<<i<<"\t \t \t"<<BKS_total(config_new)/96.49930<<"\t\t\t\t"<<(BKS_total(config_new)-temp)/96.49930<<endl;
-          temp = BKS_total(config_new);
+          temp1 = BKS_total(config_new)/96.49930; 
+          cout<<i<<"\t \t \t"<<temp1<<"\t\t\t\t"<<abs(temp1-temp)*100/max(abs(temp1),abs(temp))<<endl;
+          temp = temp1;
         }
 
       //The averages of the properties of the interest are computed in this loop.
-      if(i%1000000 == 1) 
+      if(i%400000 == 0) 
         {
           Mean += 1;
-          average.store_Energy(i, BKS_total(config_new)/96.49930);
+          average.store_Energy(i, temp);
           average.store_AveragesCalculation(config_new);
         }
     }
   average.EnergyDataWriter();
   average.DensityDataWriter(Mean);
   average.RDFWriter(Mean,N,N_si,N_o);
+  average.PositionWriter(config_new);
 
   return 0;
 }

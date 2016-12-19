@@ -32,11 +32,11 @@ void Averages::store_AveragesCalculation(const Configuration& config)
             {
               N_All = N_All + 1;
             }
-          if(rij <= x[i] + (RDP_h/2) && rij > x[i] - (RDP_h/2) && config.r[3+j] == +2.4000 ) //Silicon
+          if(rij <= x[i] + (RDP_h/2) && rij > x[i] - (RDP_h/2) && config.r[3+j] == config.q1 ) //Silicon
             {
               N_Si = N_Si + 1;
             }
-          if(rij <= x[i] + (RDP_h/2) && rij > x[i] - (RDP_h/2) && config.r[3+j] == -1.200 )//Oxygen
+          else if(rij <= x[i] + (RDP_h/2) && rij > x[i] - (RDP_h/2) && config.r[3+j] == config.q2 )//Oxygen
             {
               N_O = N_O + 1;
             }
@@ -61,15 +61,15 @@ void Averages::store_AveragesCalculation(const Configuration& config)
               {
                 N_All += 1;
               }
-              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) && config.r[k+3] == config.r[j+3] && config.r[k+3] == -1.2 )
+              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) && config.r[k+3] == config.r[j+3] && config.r[k+3] == config.q2)
               {
                 N_O += 1;
               }
-              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) && config.r[k+3] == config.r[j+3] && config.r[k+3] == 2.4  )
+              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) && config.r[k+3] == config.r[j+3] && config.r[k+3] == config.q1 )
               {
                 N_Si += 1;
               }
-              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) && config.r[k+3] != config.r[j+3] && config.r[k+3] != -1.2  )
+              if(rij <= r[i] + (RDF_h/2) && rij > r[i] - (RDF_h/2) && config.r[k+3] != config.r[j+3] && config.r[k+3] != config.q2)
               {
                 N_SiO += 1;
               }
@@ -128,4 +128,17 @@ void Averages::RDFWriter(unsigned int mean,unsigned int N,unsigned N_si,unsigned
     }
   outfile.close();
   outfile.clear(); 
+}
+
+void Averages::PositionWriter(const Configuration & config)
+{
+  ofstream outfile("output/data/Position.dat");
+  if(!outfile.is_open())
+    {
+      cout << "Error Opening file - Cannot open file!" << endl;
+    }
+  for(unsigned int i = 0; i < config.N * 4; i = i + 4)
+    { 
+      outfile << config.r[i+0] <<" \t "<< config.r[i+1] <<" \t "<< config.r[i+2] <<" \t "<< config.r[i+3] << endl;
+    } 
 }

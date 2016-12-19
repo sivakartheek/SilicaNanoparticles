@@ -1,10 +1,10 @@
 #!/bin/sh
 
+make clean
 cd Particle_generator/
 make
 ./main
 cd ../
-make clean
 echo 'Compiling'
 make
 echo 'Exectuing'
