@@ -2,10 +2,11 @@
 // The program uses free boundary conditions and BKS interatomic
 // potential(proposed by Beest, Kramer and Van Saten).The methodology
 // used in this algorithm and detailed explaination of the model is 
-// explained in the thesis work: https://www.researchgate.net/publication/311138439_A_study_on_the_structure_and_properties_of_silica_glass_and_silica_nanoparticles_via_Monte_Carlo_simulations
+// explained in the paper (thesis in the link): 
+//https://www.researchgate.net/publication/311138439_A_study_on_the_structure_and_properties_of_silica_glass_and_silica_nanoparticles_via_Monte_Carlo_simulations
 
-// The algorithm provides the structural information for given particle size (angstrom) and
-// temperature (in Kelvin)
+// The algorithm provides the structural information for given silica
+// particle size (angstrom) and temperature (in Kelvin)
 
 // author: Naveen Kumar Kaliannan
 
@@ -27,12 +28,12 @@ using namespace std;
 
 //Constants
 const double Pi = 3.1415926536;
-const unsigned int dim = 3;
+const unsigned int dim = 3;// 3 spacial dimension
 const double Unit_LJ = 96.49930; //(eV to KJ per mol unit conversion)
 const double Unit_C = 1389.552281;
-const double R = 0.0083144; 
-const double Temp     = 300;//300 Kelvin
-const unsigned int iter = 5000000;
+const double R = 0.0083144; // Gas constant
+const double Temp     = 300;//300 in Kelvin
+const unsigned int iter = 5000000; // maximum number of iterations
 const double q1 = +2.4; //Silicon charge
 const double q2 = -1.2; //Oxyegn charge
 
@@ -161,7 +162,7 @@ int main()
         {
           config_old = config_new; 
         }
-        else
+      else
         {
           config_new = config_old; 
         }  
@@ -175,7 +176,7 @@ int main()
         }
 
       //The averages of the properties of the interest are computed in this loop.
-      if(i%400000 == 0) 
+      if(i%300000 == 0) 
         {
           Mean += 1;
           average.store_Energy(i, temp);
