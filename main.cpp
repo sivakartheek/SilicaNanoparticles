@@ -89,7 +89,7 @@ double BKS(const Configuration& config,unsigned int i)
             {
               u_BKS += ((134015.6224*exp(-rij*2.7600)) - (16887.3775/pow(rij,6))) + (1389.552 * config.r[3+i] * config.r[3+j] / rij);
             }
-          else if(config.r[i+3] != config.r[j+3]) //Silica - Oxygen
+          else if(config.r[i+3] != config.r[j+3]) //Silicon - Oxygen
             {
               u_BKS += ((1737349.967*exp(-rij*4.87318)) - (12599.51795/pow(rij,6))) +  (1389.552 * config.r[3+i] * config.r[3+j] / rij);
             }
