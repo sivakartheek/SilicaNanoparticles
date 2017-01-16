@@ -4,6 +4,7 @@ The structural properties  of the silica nanoparticles are determined numericall
 
 ## 1. Potential energy versus Monte Carlo steps
 ![alt tag](https://raw.githubusercontent.com/NaveenKaliannan/SilicaNanoparticles/master/output/graph/Energy.png)
+The solution converges slowly.
 
 ## 2. Radial distribution function
 #### First peak  Si - O Bond length  = 1.6 angstrom
