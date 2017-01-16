@@ -4,7 +4,7 @@ The structural properties  of the silica nanoparticles are determined numericall
 
 ## 1. Potential energy versus Monte Carlo steps
 ![alt tag](https://raw.githubusercontent.com/NaveenKaliannan/SilicaNanoparticles/master/output/graph/Energy.png)
-The solution converges slowly.
+The solution reaches equlibirum slowly after 4 million MC steps. The averages of the properties were taken from the final 1 million MC steps at regular 1000 intervals.
 
 ## 2. Radial distribution function
 #### First peak  Si - O Bond length  = 1.6 angstrom
