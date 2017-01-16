@@ -7,8 +7,8 @@ The structural properties  of the silica nanoparticles are determined numericall
 The solution reaches equlibirum slowly after 4 million MC steps. The averages of the properties were taken from the final 1 million MC steps at regular 1000 intervals.
 
 ## 2. Radial distribution function
-#### First peak  Si - O Bond length  = 1.6 angstrom
-#### Second peak O  - O Bond length  = 2.6 angstrom
+#### First peak  Si - O  Bond length  = 1.6 angstrom
+#### Second peak O  - O  Bond length  = 2.6 angstrom
 #### Third peak  Si - Si Bond length = 3.1 angstrom
 
 ![alt tag](https://raw.githubusercontent.com/NaveenKaliannan/SilicaNanoparticles/master/output/graph/Total_RDF.png
@@ -17,7 +17,6 @@ The solution reaches equlibirum slowly after 4 million MC steps. The averages of
 ## 3. Radial number density function
 #### Si     - 0.02 per cc angstrom
 #### O      - 0.04 per cc angstrom
-#### Silica - 0.06 per cc angstrom
-
+The ratio between oxygen and silicon number density is 2, which is the expected value.
 
 ![alt tag](https://raw.githubusercontent.com/NaveenKaliannan/SilicaNanoparticles/master/output/graph/Density_profile.png)
