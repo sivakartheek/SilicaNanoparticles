@@ -5,6 +5,8 @@
 #include<iostream>
 
 
+// Computes the Radial distribution and density function for the given
+// atomic coordinatoes and stores them.
 void Averages::store_AveragesCalculation(const Configuration& config)
 {
   const double Pi = 3.1415926536;
@@ -84,7 +86,7 @@ void Averages::store_AveragesCalculation(const Configuration& config)
      
 }
 
-
+// Stores the energy of the system in Energy.dat file
 void Averages::EnergyDataWriter()
 {
   ofstream outfile("output/data/Energy.dat");
@@ -94,12 +96,14 @@ void Averages::EnergyDataWriter()
     }
   for(unsigned int i = 0; i < steps.size(); ++i)
     { 
-      outfile << steps[i] <<"  "<< Energy[i]<< endl;
+      outfile << steps[i] <<"  "<< Energy[i]<< "\n";
     }
   outfile.close();
   outfile.clear(); 
 }
 
+
+// Stores the radial density function of the system in RadialDensity.dat file
 void Averages::DensityDataWriter(unsigned int mean)
 {
   ofstream outfile("output/data/RadialDensity.dat");
@@ -109,13 +113,14 @@ void Averages::DensityDataWriter(unsigned int mean)
     }
   for(unsigned int i = 0; i < RDP_size; ++i)
     { 
-      outfile << x[i] <<" \t "<< Density_all[i]/mean <<" \t "<< Density_O[i]/mean <<" \t "<< Density_Si[i]/mean << endl;
+      outfile << x[i] <<" \t "<< Density_all[i]/mean <<" \t "<< Density_O[i]/mean <<" \t "<< Density_Si[i]/mean << "\n";
     }
   outfile.close();
   outfile.clear(); 
 }
 
-void Averages::RDFWriter(unsigned int mean,unsigned int N,unsigned N_si,unsigned N_o)
+// Stores the radial distribution function of the system in RDF.dat file
+void Averages::RDFWriter(unsigned int mean,unsigned int N,unsigned int N_si,unsigned int N_o)
 {
   ofstream outfile("output/data/RDF.dat");
   if(!outfile.is_open())
@@ -124,12 +129,13 @@ void Averages::RDFWriter(unsigned int mean,unsigned int N,unsigned N_si,unsigned
     }
   for(unsigned int i = 0; i < RDF_size; ++i)
     { 
-      outfile << r[i] <<" \t "<< RDF_all[i]/(mean*N) <<" \t "<< RDF_Si[i]/(mean*N_si) <<" \t "<< RDF_O[i]/(mean*N_o) <<" \t "<< RDF_SiO[i]/(mean*N_o) << endl;
+      outfile << r[i] <<" \t "<< RDF_all[i]/(mean*N) <<" \t "<< RDF_Si[i]/(mean*N_si) <<" \t "<< RDF_O[i]/(mean*N_o) <<" \t "<< RDF_SiO[i]/(mean*N_o) << "\n";
     }
   outfile.close();
   outfile.clear(); 
 }
 
+// Stores the final atomic coordinates in the position.dat file
 void Averages::PositionWriter(const Configuration & config)
 {
   ofstream outfile("output/data/Position.dat");
@@ -139,6 +145,6 @@ void Averages::PositionWriter(const Configuration & config)
     }
   for(unsigned int i = 0; i < config.N * 4; i = i + 4)
     { 
-      outfile << config.r[i+0] <<" \t "<< config.r[i+1] <<" \t "<< config.r[i+2] <<" \t "<< config.r[i+3] << endl;
+      outfile << config.r[i+0] <<" \t "<< config.r[i+1] <<" \t "<< config.r[i+2] <<" \t "<< config.r[i+3] << "\n";
     } 
 }

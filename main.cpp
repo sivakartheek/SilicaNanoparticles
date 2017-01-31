@@ -1,18 +1,14 @@
-// A Metropolis Monte Carlo program for silica nanoparticles.
-// The program uses free boundary conditions and BKS interatomic
-// potential(proposed by Beest, Kramer and Van Saten).The methodology
-// used in this algorithm and detailed explaination of the model is 
-// explained in the paper (thesis in the link): 
-//https://www.researchgate.net/publication/311138439_A_study_on_the_structure_and_properties_of_silica_glass_and_silica_nanoparticles_via_Monte_Carlo_simulations
+// A Metropolis Monte Carlo program for computing the structural properties
+// of silica nanoparticles. The program uses free boundary conditions and BKS
+// proposed interatomic potential for modeling the Si-O interactions. The methodology
+// used in this algorithm and detailed explaination of the model is
+// described in the paper :https://www.researchgate.net/publication/311138439_A_study_on_the_structure_and_properties_of_silica_glass_and_silica_nanoparticles_via_Monte_Carlo_simulations
 
-// The algorithm provides the structural information for given silica
-// particle size (angstrom) and temperature (in Kelvin)
-
-// author: Naveen Kumar Kaliannan
+// @author: Naveen Kumar Kaliannan
 
 
 #include<iostream>
-#include <iomanip>  
+#include<iomanip>  
 #include<fstream>
 #include<cstdlib>
 #include<vector>
@@ -37,7 +33,7 @@ const unsigned int iter = 5000000; // maximum number of iterations
 const double q1 = +2.4; //Silicon charge
 const double q2 = -1.2; //Oxyegn charge
 
-//Buckingham + Coloumb potentials (Total system)
+// Computes the Short range and Long range interaction (total system)
 double BKS_total(const Configuration& config)
 {
   double u_BKS = 0;
@@ -66,11 +62,11 @@ double BKS_total(const Configuration& config)
         }
     }
 
-  return u_BKS*2;
+  return u_BKS;
 }
 
 
-//Buckingham + Coloumb potentials (single pair)
+// Computes the Short range and Long range interaction (single pair)
 double BKS(const Configuration& config,unsigned int i)
 {
   double u_BKS = 0;
@@ -101,7 +97,7 @@ double BKS(const Configuration& config,unsigned int i)
 
 
 
-
+// Main implementation
 int main()
 {
   //Particle size

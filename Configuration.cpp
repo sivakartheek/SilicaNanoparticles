@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// Constructor to initialize the variables in the silica nanoparticle system
 Configuration::Configuration(unsigned int N_, unsigned int N_si_, unsigned int N_o_, double* r_, double q1_, double q2_)
 {
   N = N_;
@@ -21,6 +22,7 @@ Configuration::Configuration(unsigned int N_, unsigned int N_si_, unsigned int N
     }
 }
 
+// Copy constructor
 Configuration::Configuration(const Configuration& config)
 {
   N = config.N;
@@ -38,6 +40,7 @@ Configuration::Configuration(const Configuration& config)
     }
 }
 
+// Copies the atomic cooridnates from one to another.
 Configuration& Configuration::operator=(const Configuration& config)
 {
   for(unsigned int i = 0;i < N * 4;i = i + 4)
@@ -50,6 +53,7 @@ Configuration& Configuration::operator=(const Configuration& config)
   return *this;
 }
 
+// Randomly moves the atom
 void Configuration::ChangePosition(unsigned int P)
 {
   r[P+0] += 0.075*(2*Rand_DOUBLE()-1); 
@@ -57,18 +61,19 @@ void Configuration::ChangePosition(unsigned int P)
   r[P+2] += 0.075*(2*Rand_DOUBLE()-1);
 }
 
-
+// Prints the atomic coordinates
 void Configuration::print_position()
 {
   for(unsigned int i = 0;i < N * 4;i = i + 4)
     {
-      cout << i <<" "<< r[0+i] <<" "<< r[1+i] <<" "<< r[2+i] <<" "<< r[3+i] << endl;
+      cout << i <<" "<< r[0+i] <<" "<< r[1+i] <<" "<< r[2+i] <<" "<< r[3+i] << "\n";
     }
 }
 
+// Prints the number of silicon and oxygen atoms in the system
 void Configuration::print_particle_count()
 {
-  std::cout <<"Total number of atoms in the system = "<< N << std::endl;
-  std::cout <<"Number of silicon atoms = "<< N_si << std::endl;
-  std::cout <<"Number of oxygen atoms = "<< N_o << std::endl;
+  std::cout <<"Total number of atoms in the system = "<< N << "\n";
+  std::cout <<"Number of silicon atoms = "<< N_si << "\n";
+  std::cout <<"Number of oxygen atoms = "<< N_o << "\n";
 }

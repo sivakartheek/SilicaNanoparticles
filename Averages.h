@@ -93,7 +93,7 @@ class Averages
     void store_AveragesCalculation(const Configuration& config);
     void EnergyDataWriter();
     void DensityDataWriter(unsigned int mean); 
-    void RDFWriter(unsigned int mean,unsigned int N,unsigned N_si,unsigned N_o);   
+    void RDFWriter(unsigned int mean,unsigned int N,unsigned int N_si,unsigned int N_o);   
     void PositionWriter(const Configuration & config);
     inline double norm(double x,double y,double z)
     {
